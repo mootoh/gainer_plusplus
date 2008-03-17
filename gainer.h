@@ -24,6 +24,13 @@ public:
   void peek_digital_input();
   void peek_analog_input();
   void set_digital_outputl(int n);
+  void process_next_event(int wait = 0);
+  void set_on_pressed(callback_t funcp) {
+    on_pressed = funcp;
+  }
+  void set_on_released(callback_t funcp) {
+    on_released = funcp;
+  }
 
 private:
   void setup_port();
@@ -31,7 +38,6 @@ private:
   void set_configuration(int number);
   void command(const std::string &cmd, int wait=0);
   void command_send(const std::string &cmd);
-  void process_next_event(int wait = 0);
   void process_event(std::string &event);
   std::string next_event();
 
@@ -53,4 +59,6 @@ private:
   Serial &instance;
 }; // Port
 
+class Exception {
+}; // Exception
 } // Gainer

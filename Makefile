@@ -6,5 +6,8 @@ CXXFLAGS = -g -O0
 gainer-led: gainer-led.o gainer.o
 	$(CXX) -o $@ $^ $(LDFLAGS)
 
+gainer-button: gainer-button.o gainer.o
+	$(CXX) -o $@ $^ $(LDFLAGS)
+
 clean:
 	rm -f *.o

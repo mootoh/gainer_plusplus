@@ -73,6 +73,7 @@ void Serial::command(const std::string &cmd, int wait) {
 }
 
 void Serial::process_next_event(int wait) {
+  //std::cerr << "process_next_event" << std::endl;
   std::string reply(next_event());
   sleep(wait);
   process_event(reply);
@@ -84,6 +85,7 @@ void Serial::command_send(const std::string &cmd) {
 
 std::string Serial::next_event() {
   while (true) {
+    std::cerr << "next_event..." << std::endl;
     fd_set fds;
     FD_ZERO(&fds);
     FD_SET(io_, &fds);
@@ -104,6 +106,32 @@ std::string Serial::next_event() {
 }
 
 void Serial::process_event(std::string &event) {
+  std::cout << "event: " << event << std::endl;
+  switch(event[0]) {
+    case '!':
+      throw Exception();
+    case 'h':
+      led_ = true;
+      break;
+    case 'l':
+      led_ = false;
+      break;
+    case 'N':
+      on_pressed();
+      break;
+    case 'F':
+      on_released();
+      break;
+    case 'I':
+      std::cerr << "analog_input: " << event << std::endl;
+      // analog_input = ...
+      break;
+    case 'R':
+      std::cerr << "digital_input: " << event << std::endl;
+      // digital_input = ...
+    default:
+      break;
+  }
 }
 
 const int Serial::CONFIG[][4] = {
