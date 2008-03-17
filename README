@@ -1,0 +1,26 @@
+= Gainer for C++ =
+This library provides a C++ interface for Gainer I/O module.
+Most of the codes are based on gainer-ruby (http://8-p.info/gainer-ruby/).
+
+== Installation ==
+Not provided yet.
+
+== Usage ==
+See gainer-led.cc in action.
+
+% make
+% ./gainer-led /dev/cu.usbserial-A2002cuJ
+
+== Note ==
+ - Tested under Mac OS X 10.5.2 only.
+ - Porting not completed yet.
+
+== Copyright ==
+ - Author: Motohiro Takayama
+ - License: MIT
+
+=== Original (gainer-ruby) ===
+ - Author: KATO Kazuyoshi <kzys@8-p.info>
+ - Copyright: Copyright (c) 2007-2008 KATO Kazuyoshi
+ - License::   MIT
+
