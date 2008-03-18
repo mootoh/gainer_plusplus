@@ -1,13 +1,20 @@
 CXX = c++
-CPPFLAGS = -Wall
+CPPFLAGS = -Wall -DDEBUG
 CXXFLAGS = -g -O0
-#LDFLAGS = -ltermios
 
-gainer-led: gainer-led.o gainer.o
-	$(CXX) -o $@ $^ $(LDFLAGS)
+LIB = gainer
+TARGET_LIB = lib$(LIB).dylib
 
-gainer-button: gainer-button.o gainer.o
-	$(CXX) -o $@ $^ $(LDFLAGS)
+LIBS = -L. -l$(LIB)
+
+$(TARGET_LIB): gainer.o
+	$(CXX) -dynamiclib -o $@ $^
+
+gainer-led: gainer-led.o
+	$(CXX) -o $@ $^ $(LIBS)
+
+gainer-button: gainer-button.o
+	$(CXX) -o $@ $^ $(LIBS)
 
 clean:
-	rm -f *.o
+	rm -f *.o $(TARGET_LIB)
