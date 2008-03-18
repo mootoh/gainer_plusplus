@@ -5,7 +5,7 @@
 #include <fcntl.h>
 #include <sys/select.h>
 #include "gainer.h"
-#include <cassert>
+#include <iomanip>
 
 #define ABORT_UNLESS(stmt) \
 if (!((stmt))) { \
@@ -154,15 +154,10 @@ void Gainer::process_event(std::string &event) {
       break;
     case 'I': { // analog_input
       std::string::size_type ast(event.find('*'));
-      std::string nums(event.substr(1, ast-1));
-      std::cout << nums << std::endl;
-      for (int i(1); ; i++) {
-        char ch(event[i]);
-        if (isdigit(ch) or ('A' <= ch and 'F' >= ch))
-          digital_inputs[i-1] = ch-'0';
-        else
-          break;
-      }
+      std::string s(event.substr(1, ast-1));
+      sscanf(s.c_str(), "%02X%02X%02X%02X*",
+        &analog_inputs[0], &analog_inputs[1],
+        &analog_inputs[2], &analog_inputs[3]);
       break;
     }
     case 'R': { // digital input
