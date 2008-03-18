@@ -152,7 +152,10 @@ void Gainer::process_event(std::string &event) {
     case 'F': // button released
       on_released();
       break;
-    case 'I': // analog_input
+    case 'I': { // analog_input
+      std::string::size_type ast(event.find('*'));
+      std::string nums(event.substr(1, ast-1));
+      std::cout << nums << std::endl;
       for (int i(1); ; i++) {
         char ch(event[i]);
         if (isdigit(ch) or ('A' <= ch and 'F' >= ch))
@@ -161,15 +164,16 @@ void Gainer::process_event(std::string &event) {
           break;
       }
       break;
-    case 'R': // digital input
-      for (int i(1); ; i++) {
-        char ch(event[i]);
-        if (isdigit(ch) or ('A' <= ch and 'F' >= ch))
-          digital_inputs[i-1] = ch-'0';
-        else
-          break;
-      }
+    }
+    case 'R': { // digital input
+      std::string::size_type ast(event.find('*'));
+      std::stringstream ss(event.substr(1, ast-1));
+      int num;
+      ss >> std::hex >> num;
+      for (size_t i(0); i<digital_inputs.size(); i++)
+        digital_inputs[i] = num & (1<<i);
       break;
+    }
     default:
       break;
   }
