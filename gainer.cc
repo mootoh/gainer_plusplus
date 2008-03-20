@@ -99,12 +99,13 @@ namespace Gainer {
 
   // void Gainer::set_matrix(ary) // TODO
 
-  void Gainer::set_led(bool flag)    { command(flag ? "h" : "l"); }
-  void Gainer::reboot()              { command("Q", 1); }
-  void Gainer::peek_digital_inputs() { command("R"); }
-  void Gainer::peek_analog_inputs()  { command("I"); }
+  void Gainer::set_led(bool flag)          { command(flag ? "h" : "l"); }
+  void Gainer::reboot()                    { command("Q", 1); }
+  void Gainer::peek_digital_inputs()       { command("R"); }
+  void Gainer::peek_analog_inputs()        { command("I"); }
   void Gainer::continuous_digital_inputs() { command("r"); }
-  void Gainer::exit_continuos() { command("E"); }
+  void Gainer::continuous_analog_inputs()  { command("i"); }
+  void Gainer::exit_continuos()            { command("E"); }
 
   void Gainer::set_digital_output(int n) {
     std::stringstream ss("D");
@@ -117,40 +118,11 @@ namespace Gainer {
 
   void Gainer::command(const std::string &cmd, int wait) {
     command_send(cmd + '*');
-    process_next_event(wait);
-  }
-
-  void Gainer::process_next_event(int wait) {
-    //std::cerr << "process_next_event" << std::endl;
-    //std::string reply(next_event());
     sleep(wait);
-    //process_event(reply);
   }
 
   void Gainer::command_send(const std::string &cmd) {
     write(io_, cmd.c_str(), cmd.size());
-  }
-
-  std::string Gainer::next_event() {
-    while (true) {
-      std::cerr << "next_event..." << std::endl;
-      fd_set fds;
-      FD_ZERO(&fds);
-      FD_SET(io_, &fds);
-
-      struct timeval timeout;
-      timeout.tv_sec = 1;
-      timeout.tv_usec = 0;
-
-      int ret(select(io_+1, &fds, NULL, NULL, &timeout));
-      if (0 != ret) {
-        const size_t SIZE(80);
-        char buf[SIZE];
-        read(io_, buf, SIZE);
-        return buf;
-      }
-    }
-    return "";
   }
 
   void Gainer::process_event(std::string &event) {
@@ -170,6 +142,7 @@ namespace Gainer {
       case 'F': // button released
         on_released();
         break;
+      case 'i':
       case 'I': { // analog_input
                   std::string::size_type ast(event.find('*'));
                   std::string s(event.substr(1, ast-1));
@@ -178,16 +151,8 @@ namespace Gainer {
                       &analog_inputs[2], &analog_inputs[3]);
                   break;
                 }
-      case 'R': { // peek digital input
-                  std::string::size_type ast(event.find('*'));
-                  std::stringstream ss(event.substr(1, ast-1));
-                  int num;
-                  ss >> std::hex >> num;
-                  for (size_t i(0); i<digital_inputs.size(); i++)
-                    digital_inputs[i] = num & (1<<i);
-                  break;
-                }
-      case 'r': { // continuous digital input
+      case 'r':
+      case 'R': { // digital input
                   std::string::size_type ast(event.find('*'));
                   std::stringstream ss(event.substr(1, ast-1));
                   int num;

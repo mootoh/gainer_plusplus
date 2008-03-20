@@ -11,13 +11,12 @@ Gainer *gainer;
 
 static void on_pressed() {
   cout << "pressed" << endl;
-  //gainer->peek_digital_inputs();
-  //gainer->peek_analog_inputs();
 }
 
 static void on_released() {
   cout << "released" << endl;
 
+#if 0
   cout << "digital : ";
   for (size_t i(0); i<gainer->digital_inputs.size(); i++) {
     cout << gainer->digital_inputs[i] << ' ';
@@ -27,6 +26,16 @@ static void on_released() {
   for (size_t i(0); i<gainer->analog_inputs.size(); i++) {
     cout << gainer->analog_inputs[i] << ' ';
   } cout << endl;
+#endif // 0
+    cout << "A: ";
+    for (size_t i(0); i<gainer->analog_inputs.size(); i++) {
+      cout << gainer->analog_inputs[i] << ' ';
+    } cout << endl;
+
+    cout << "D: ";
+    for (size_t i(0); i<gainer->digital_inputs.size(); i++) {
+      cout << gainer->digital_inputs[i] << ' ';
+    } cout << endl;
 }
 
 int main(int argc, char **argv) {
@@ -39,25 +48,13 @@ int main(int argc, char **argv) {
   gainer->set_on_released(on_released);
 
   while (true) {
-    std::cerr << "process_next_event" << std::endl;
-    //gainer->process_next_event();
     //gainer->peek_analog_inputs();
     gainer->peek_digital_inputs();
-    usleep(100000);
+    sleep(1);
     /*
     gainer->peek_analog_inputs();
     gainer->peek_digital_inputs();
     */
-
-    cout << "A: ";
-    for (size_t i(0); i<gainer->analog_inputs.size(); i++) {
-      cout << gainer->analog_inputs[i] << ' ';
-    } cout << endl;
-
-    cout << "D: ";
-    for (size_t i(0); i<gainer->digital_inputs.size(); i++) {
-      cout << gainer->digital_inputs[i] << ' ';
-    } cout << endl;
   }
 
   delete gainer;
