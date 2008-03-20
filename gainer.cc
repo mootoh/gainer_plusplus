@@ -30,7 +30,7 @@ void *Gainer::receiver(void *arg) {
   timeout.tv_usec = 0;
 
   while (not self->end_) {
-    DEBUG_PRINT("next_event...");
+    //DEBUG_PRINT("next_event...");
 
     fd_set fds;
     FD_ZERO(&fds);
@@ -41,7 +41,14 @@ void *Gainer::receiver(void *arg) {
       //DEBUG_PRINT("receiver: selected");
       const size_t SIZE(80);
       char buf[SIZE];
-      read(self->io_, buf, SIZE);
+      char ch(' ');
+      size_t i(0);
+      while ('*' != ch and i<SIZE) {
+        read(self->io_, &ch, 1);
+        buf[i++] = ch;
+      }
+      //read(self->io_, buf, SIZE);
+      //DEBUG_PRINT(buf);
       std::string s(buf);
 
       self->process_event(s);
@@ -52,7 +59,7 @@ void *Gainer::receiver(void *arg) {
 
 namespace Gainer {
   Gainer::Gainer(const std::string &path, int config) :
-    led_(false)
+      led_(false)
     , config_(config)
     , end_(false)
     , on_pressed(NULL)
@@ -67,6 +74,7 @@ namespace Gainer {
   }
 
   Gainer::~Gainer() {
+    reboot();
     end_ = true;
     pthread_join(thread_, NULL);
     close(io_);
@@ -100,7 +108,7 @@ namespace Gainer {
   // void Gainer::set_matrix(ary) // TODO
 
   void Gainer::set_led(bool flag)          { command(flag ? "h" : "l"); }
-  void Gainer::reboot()                    { command("Q", 1); }
+  void Gainer::reboot()                    { command("Q", 2); }
   void Gainer::peek_digital_inputs()       { command("R"); }
   void Gainer::peek_analog_inputs()        { command("I"); }
   void Gainer::continuous_digital_inputs() { command("r"); }
@@ -109,9 +117,8 @@ namespace Gainer {
 
   void Gainer::set_digital_output(int n) {
     std::stringstream ss("D");
-    for (int i(0); i< CONFIG[config_][DOUT]-1; i++) {
+    for (int i(0); i< CONFIG[config_][DOUT]-1; i++)
       ss << ' ';
-    }
     ss << n;
     command(ss.str());
   }
@@ -126,7 +133,7 @@ namespace Gainer {
   }
 
   void Gainer::process_event(std::string &event) {
-    DEBUG_PRINT("event: " << event);
+    //DEBUG_PRINT("event: " << event);
     switch(event[0]) {
       case '!': // something wrong
         throw GainerInternal::Exception();

@@ -19,6 +19,8 @@ gainer-button: gainer-button.o $(TARGET_LIB)
 gainer-cdio: gainer-cdio.o $(TARGET_LIB)
 	$(CXX) -o $@ $^ $(LIBS)
 
+gainer-cain: gainer-cain.o $(TARGET_LIB)
+	$(CXX) -o $@ $^ $(LIBS)
 
 clean:
 	rm -f *.o $(TARGET_LIB)
