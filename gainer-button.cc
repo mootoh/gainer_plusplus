@@ -41,8 +41,8 @@ int main(int argc, char **argv) {
   while (true) {
     std::cerr << "process_next_event" << std::endl;
     //gainer->process_next_event();
-    gainer->peek_analog_inputs();
-    //gainer->peek_digital_inputs();
+    //gainer->peek_analog_inputs();
+    gainer->peek_digital_inputs();
     usleep(100000);
     /*
     gainer->peek_analog_inputs();

@@ -3,6 +3,7 @@
  */
 #include <string>
 #include <vector>
+#include <pthread.h>
 
 class Gainer;
 
@@ -34,6 +35,10 @@ public:
   void peek_digital_inputs(); //! capture all digital inputs
   void peek_analog_inputs();   //! capture all analog inputs
 
+  void continuous_digital_inputs();
+
+  void exit_continuos();
+
   void set_digital_output(int n);
   void set_analog_output(int n);
 
@@ -56,12 +61,16 @@ private:
   void process_event(std::string &event);
   std::string next_event();
 
+  pthread_t thread_;
   int config_;
   int io_;
+  bool end_;
   callback_t on_pressed, on_released;
 
   enum pin_t {AIN=0, DIN, AOUT, DOUT};
   static const int CONFIG[][4];
   static const int MATRIX_LED_CONFIGURATION = 7;
+
+  static void *receiver(void *arg);
 }; // Gainer
 
